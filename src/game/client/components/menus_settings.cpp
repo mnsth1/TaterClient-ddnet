@@ -2369,7 +2369,7 @@ void CMenus::RenderSettingsHUD(CUIRect MainView)
 		DoButton_CheckBoxAutoVMarginAndSet(&g_Config.m_ClShowVotesAfterVoting, Localize("Show votes window after voting"), &g_Config.m_ClShowVotesAfterVoting, &MainView, LineMargin);
 		DoButton_CheckBoxAutoVMarginAndSet(&g_Config.m_ClShowKillMessages, Localize("Show kill messages"), &g_Config.m_ClShowKillMessages, &MainView, LineMargin);
 
-		MainView.HSplitTop(60.0f, 0x0, &MainView);
+		MainView.HSplitTop(30.0f, 0x0, &MainView);
 
 		// ***** Kill Messages ***** //
 
