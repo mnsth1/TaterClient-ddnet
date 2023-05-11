@@ -3298,7 +3298,7 @@ void CMenus::RenderSettingsTClient(CUIRect MainView)
         if (g_Config.m_ClNotifyWhenLast)
         {
             // create a text box for notification text 
-            CUIRect Button, Label;
+            CUIRect Button;
             static CButtonContainer NotifyWhenLastTextID;
         	MainView.HSplitTop(5.0f, 0, &MainView);
         	MainView.HSplitTop(20.0f, &Button, &MainView);
@@ -3618,9 +3618,6 @@ void CMenus::RenderSettingsTClient(CUIRect MainView)
 		CUIRect LeftColumn = MainView;
 		MainView.HSplitTop(30.0f, &Section, &MainView);
 
-		const float FontSize = 14.0f;
-		const float Margin = 10.0f;
-
 		CUIRect buttons[NUM_BINDWHEEL];
 		char pD[NUM_BINDWHEEL][MAX_BINDWHEEL_DESC];
 		char pC[NUM_BINDWHEEL][MAX_BINDWHEEL_CMD];
@@ -3731,15 +3728,15 @@ void CMenus::RenderSettingsTClient(CUIRect MainView)
 				}
 			}
 
-			CUIRect Button, Label;
+			CUIRect Button, KeyLabel;
 			LeftColumn.HSplitBottom(20.0f, &LeftColumn, 0);
 			LeftColumn.HSplitBottom(20.0f, &LeftColumn, &Button);
-			Button.VSplitLeft(120.0f, &Label, &Button);
+			Button.VSplitLeft(120.0f, &KeyLabel, &Button);
 			Button.VSplitLeft(100, &Button, 0);
 			char aBuf[64];
 			str_format(aBuf, sizeof(aBuf), "%s:", Localize((const char *)Key.m_Name));
 
-			UI()->DoLabel(&Label, aBuf, 13.0f, TEXTALIGN_LEFT);
+			UI()->DoLabel(&KeyLabel, aBuf, 13.0f, TEXTALIGN_LEFT);
 			int OldId = Key.m_KeyId, OldModifierCombination = Key.m_ModifierCombination, NewModifierCombination;
 			int NewId = DoKeyReader((void *)&Key.m_Name, &Button, OldId, OldModifierCombination, &NewModifierCombination);
 			if(NewId != OldId || NewModifierCombination != OldModifierCombination)
