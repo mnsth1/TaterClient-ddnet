@@ -33,7 +33,6 @@ void COutlines::OnRender()
 			CMapItemLayer *pLayer = GameClient()->Layers()->GetLayer(pGroup->m_StartLayer + l);
 			if(!pLayer)
 				return;
-			bool Render = false;
 			bool IsGameLayer = false;
 			bool IsTeleLayer = false;
 
