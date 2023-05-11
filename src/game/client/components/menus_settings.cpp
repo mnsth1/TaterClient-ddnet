@@ -3617,7 +3617,7 @@ void CMenus::RenderSettingsTClient(CUIRect MainView)
 		MainView.VSplitLeft(MainView.w * 0.5, &MainView, &Column);
 		CUIRect LeftColumn = MainView;
 		MainView.HSplitTop(30.0f, &Section, &MainView);
-
+		 
 		CUIRect buttons[NUM_BINDWHEEL];
 		char pD[NUM_BINDWHEEL][MAX_BINDWHEEL_DESC];
 		char pC[NUM_BINDWHEEL][MAX_BINDWHEEL_CMD];
@@ -3642,7 +3642,7 @@ void CMenus::RenderSettingsTClient(CUIRect MainView)
 			}
 
 			int orgAngle = 2 * pi * i / NUM_BINDWHEEL;
-			if(orgAngle >= 0 && orgAngle < 2 || orgAngle >= 4 && orgAngle < 6)
+			if(((orgAngle >= 0 && orgAngle < 2)) || ((orgAngle >= 4 && orgAngle < 6)))
 			{
 				margin = 170.0f;
 			}
