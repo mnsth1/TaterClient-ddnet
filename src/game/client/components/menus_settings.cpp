@@ -3194,13 +3194,13 @@ void CMenus::RenderSettingsTClient(CUIRect MainView)
 {
 	static int s_CurCustomTab = 0;
 
-	CUIRect Column, Section, TabBar, Page1Tab, Page2Tab, Page3Tab, Label;
+	CUIRect Column, Section, Page1Tab, Page2Tab, Page3Tab, LabelTop;
 
 	MainView.HMargin(-15.0f, &MainView);
 
-	MainView.HSplitTop(20, &Label, &MainView);
-	float TabsW = Label.w;
-	Label.VSplitLeft(TabsW / NUMBER_OF_TCLIENT_TABS, &Page1Tab, &Page2Tab);
+	MainView.HSplitTop(20, &LabelTop, &MainView);
+	float TabsW = LabelTop.w;
+	LabelTop.VSplitLeft(TabsW / NUMBER_OF_TCLIENT_TABS, &Page1Tab, &Page2Tab);
 	Page2Tab.VSplitLeft(TabsW / NUMBER_OF_TCLIENT_TABS, &Page2Tab, &Page3Tab);
 
 	static CButtonContainer s_aPageTabs[NUMBER_OF_TCLIENT_TABS] = {};
@@ -3300,7 +3300,6 @@ void CMenus::RenderSettingsTClient(CUIRect MainView)
             // create a text box for notification text 
             CUIRect Button, Label;
             static CButtonContainer NotifyWhenLastTextID;
-            static float s_NotifyWhenLastText = 0.0f;
         	MainView.HSplitTop(5.0f, 0, &MainView);
         	MainView.HSplitTop(20.0f, &Button, &MainView);
         	Button.VSplitLeft(15.0f, 0, &Button);
@@ -3621,12 +3620,11 @@ void CMenus::RenderSettingsTClient(CUIRect MainView)
 
 		const float FontSize = 14.0f;
 		const float Margin = 10.0f;
-		const float HeaderHeight = FontSize + 5.0f + Margin;
 
 		CUIRect buttons[NUM_BINDWHEEL];
 		char pD[NUM_BINDWHEEL][MAX_BINDWHEEL_DESC];
 		char pC[NUM_BINDWHEEL][MAX_BINDWHEEL_CMD];
-
+		CUIRect Label;
 
 		// Draw Circle
 		Graphics()->TextureClear();
@@ -3678,9 +3676,9 @@ void CMenus::RenderSettingsTClient(CUIRect MainView)
 				MainView.VSplitLeft(MainView.w * 0.5, 0, &MainView);
 			}
 
-			str_format(pD[i], sizeof(pD[i]), GameClient()->m_Bindwheel.m_BindWheelList[i].description);
+			str_format(pD[i], sizeof(pD[i]), "%s", GameClient()->m_Bindwheel.m_BindWheelList[i].description);
 
-			str_format(pC[i], sizeof(pC[i]), GameClient()->m_Bindwheel.m_BindWheelList[i].command);
+			str_format(pC[i], sizeof(pC[i]), "%s", GameClient()->m_Bindwheel.m_BindWheelList[i].command);
 
 			// Description
 			MainView.HSplitTop(15.0f, 0, &MainView);
@@ -3844,7 +3842,7 @@ void CMenus::RenderSettingsProfiles(CUIRect MainView)
 	bool doFlag = g_Config.m_ClApplyProfileFlag;
 
 	//======AFTER LOAD======
-	if(SelectedProfile != -1 && SelectedProfile < GameClient()->m_SkinProfiles.m_Profiles.size())
+	if(SelectedProfile != -1 && SelectedProfile < (int)GameClient()->m_SkinProfiles.m_Profiles.size())
 	{
 		CProfile LoadProfile = GameClient()->m_SkinProfiles.m_Profiles[SelectedProfile];
 		MainView.HSplitTop(20.0f, 0, &MainView);
@@ -3948,7 +3946,7 @@ void CMenus::RenderSettingsProfiles(CUIRect MainView)
 
 	if(DoButton_Menu(&s_LoadButton, Localize("Load"), 0, &Button, 0, IGraphics::CORNER_ALL, 5.0f, 0.0f, vec4(0.0f, 0.0f, 0.0f, 0.5f), vec4(0.0f, 0.0f, 0.0f, 0.25f)))
 	{
-		if(SelectedProfile != -1 && SelectedProfile < GameClient()->m_SkinProfiles.m_Profiles.size())
+		if(SelectedProfile != -1 && SelectedProfile < (int)GameClient()->m_SkinProfiles.m_Profiles.size())
 		{
 			CProfile LoadProfile = GameClient()->m_SkinProfiles.m_Profiles[SelectedProfile];
 			if(!m_Dummy)
@@ -4018,7 +4016,7 @@ void CMenus::RenderSettingsProfiles(CUIRect MainView)
 		static CButtonContainer s_DeleteButton;
 		if(DoButton_Menu(&s_DeleteButton, Localize("Delete"), 0, &Button, 0, IGraphics::CORNER_ALL, 5.0f, 0.0f, vec4(0.0f, 0.0f, 0.0f, 0.5f), vec4(0.0f, 0.0f, 0.0f, 0.25f)))
 		{
-			if(SelectedProfile != -1 && SelectedProfile < GameClient()->m_SkinProfiles.m_Profiles.size())
+			if(SelectedProfile != -1 && SelectedProfile < (int)GameClient()->m_SkinProfiles.m_Profiles.size())
 			{
 				GameClient()->m_SkinProfiles.m_Profiles.erase(GameClient()->m_SkinProfiles.m_Profiles.begin() + SelectedProfile);
 				GameClient()->m_SkinProfiles.SaveProfiles();
@@ -4030,7 +4028,7 @@ void CMenus::RenderSettingsProfiles(CUIRect MainView)
 		static CButtonContainer s_OverrideButton;
 		if(DoButton_Menu(&s_OverrideButton, Localize("Override"), 0, &Button, 0, IGraphics::CORNER_ALL, 5.0f, 0.0f, vec4(0.0f, 0.0f, 0.0f, 0.5f), vec4(0.0f, 0.0f, 0.0f, 0.25f)))
 		{
-			if(SelectedProfile != -1 && SelectedProfile < GameClient()->m_SkinProfiles.m_Profiles.size())
+			if(SelectedProfile != -1 && SelectedProfile < (int)GameClient()->m_SkinProfiles.m_Profiles.size())
 			{
 				GameClient()->m_SkinProfiles.m_Profiles[SelectedProfile] = CProfile(
 					doColors ? *pColorBody : -1,
@@ -4051,15 +4049,12 @@ void CMenus::RenderSettingsProfiles(CUIRect MainView)
 	SelectorRect.HSplitBottom(15.0, &SelectorRect, 0);
 	std::vector<CProfile> *pProfileList = &GameClient()->m_SkinProfiles.m_Profiles;
 
-	static int s_ProfileList;
-	static float s_ProfileScroll = 0.0f;
 
     static bool s_ListBoxUsed = false;
 	static CListBox s_ListBox;
 	s_ListBox.DoStart(50.0f, pProfileList->size(), 4, 3, SelectedProfile, &SelectorRect, true, &s_ListBoxUsed);
 
 	static bool s_Indexs[1024];
-	static bool s_ToolTips[1024];
 
 	for(size_t i = 0; i < pProfileList->size(); ++i)
 	{
@@ -4098,10 +4093,10 @@ void CMenus::RenderSettingsProfiles(CUIRect MainView)
 			RenderTools()->GetRenderTeeOffsetToRenderedTee(pIdleState, &Info, OffsetToMid);
 
 			int RenderEmote = CurrentProfile.Emote == -1 ? Emote : CurrentProfile.Emote;
-			vec2 TeeRenderPos = vec2(Item.m_Rect.x + 30, Item.m_Rect.y + Item.m_Rect.h / 2 + OffsetToMid.y);
+			TeeRenderPos = vec2(Item.m_Rect.x + 30, Item.m_Rect.y + Item.m_Rect.h / 2 + OffsetToMid.y);
 
 			Item.m_Rect.VSplitLeft(60.0f, 0, &Item.m_Rect);
-			CUIRect FlagRect, PlayerRect, ClanRect, FeetColorSquare, BodyColorSquare;
+			CUIRect PlayerRect, ClanRect, FeetColorSquare, BodyColorSquare;
 
 			Item.m_Rect.VSplitLeft(60.0f, 0, &BodyColorSquare); //Delete this maybe
 
