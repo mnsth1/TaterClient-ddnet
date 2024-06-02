@@ -207,7 +207,6 @@ void CServer::CClient::Reset()
 	// reset input
 	for(auto &Input : m_aInputs)
 		Input.m_GameTick = -1;
-	m_CurrentInput = 0;
 
 	m_Snapshots.PurgeAll();
 	m_LastAckedSnapshot = -1;
@@ -1625,6 +1624,13 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 			const int LastAckedSnapshot = Unpacker.GetInt();
 			int IntendedTick = Unpacker.GetInt();
 			int Size = Unpacker.GetInt();
+
+			int BufferPosition = IntendedTick % 200;
+			// The client is not allowed to change inputs for a tick they have already sent to the server
+			if(m_aClients[ClientId].m_aInputs[BufferPosition].m_GameTick == IntendedTick)
+			{
+				return;
+			}
 			if(Unpacker.Error() || Size / 4 > MAX_INPUT_SIZE || IntendedTick < MIN_TICK || IntendedTick >= MAX_TICK)
 			{
 				return;
@@ -1655,7 +1661,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 
 			m_aClients[ClientId].m_LastInputTick = IntendedTick;
 
-			CClient::CInput *pInput = &m_aClients[ClientId].m_aInputs[m_aClients[ClientId].m_CurrentInput];
+			CClient::CInput *pInput = &m_aClients[ClientId].m_aInputs[BufferPosition];
 
 			// TODO: This should probably not be here, the most recent input can be found by looping over the ring buffer
 			// so we should not change the inputs original intended tick since we might need that information
@@ -1676,11 +1682,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 			GameServer()->OnClientPrepareInput(ClientId, pInput->m_aData);
 
 			CClient::CInput LatestInput;
-
 			mem_copy(LatestInput.m_aData, pInput->m_aData, MAX_INPUT_SIZE * sizeof(int));
-
-			m_aClients[ClientId].m_CurrentInput++;
-			m_aClients[ClientId].m_CurrentInput %= 200;
 
 			// call the mod with the fresh input data
 			if(m_aClients[ClientId].m_State == CClient::STATE_INGAME)
