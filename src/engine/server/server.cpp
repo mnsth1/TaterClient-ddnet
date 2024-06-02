@@ -2652,8 +2652,6 @@ void CServer::UpdateDebugDummies(bool ForceDisconnect)
 			Input.m_Direction = (ClientId & 1) ? -1 : 1;
 			m_aClients[ClientId].m_aInputs[0].m_GameTick = Tick() + 1;
 			mem_copy(m_aClients[ClientId].m_aInputs[0].m_aData, &Input, minimum(sizeof(Input), sizeof(m_aClients[ClientId].m_aInputs[0].m_aData)));
-			m_aClients[ClientId].m_LatestInput = m_aClients[ClientId].m_aInputs[0];
-			m_aClients[ClientId].m_CurrentInput = 0;
 		}
 	}
 

@@ -1294,7 +1294,7 @@ static int PlayerFlags_SevenToSix(int Flags)
 
 // Server hooks
 
-// Called on all incoming NETMSG_INPUT, reformats player flags for sixup compatibility 
+// Called on all incoming NETMSG_INPUT, reformats player flags for sixup compatibility
 void CGameContext::OnClientPrepareInput(int ClientId, void *pInput)
 {
 	auto *pPlayerInput = (CNetObj_PlayerInput *)pInput;
@@ -1302,7 +1302,7 @@ void CGameContext::OnClientPrepareInput(int ClientId, void *pInput)
 		pPlayerInput->m_PlayerFlags = PlayerFlags_SevenToSix(pPlayerInput->m_PlayerFlags);
 }
 
-// Called on all incoming NETMSG_INPUT, only sets player flags and tracks afk status. 
+// Called on all incoming NETMSG_INPUT, only sets player flags and tracks afk status
 void CGameContext::OnClientFreshInput(int ClientId, void *pInput)
 {
 	if(!m_World.m_Paused)
