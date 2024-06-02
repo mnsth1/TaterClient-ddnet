@@ -57,8 +57,8 @@ public:
 	void Snap(int SnappingClient);
 	void FakeSnap();
 
-	void OnDirectInput(CNetObj_PlayerInput *pNewInput);
-	void OnPredictedInput(CNetObj_PlayerInput *pNewInput);
+	void OnPlayerFreshInput(CNetObj_PlayerInput *pNewInput);
+	void OnPlayerInput(CNetObj_PlayerInput *pNewInput);
 	void OnPredictedEarlyInput(CNetObj_PlayerInput *pNewInput);
 	void OnDisconnect();
 

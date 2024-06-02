@@ -1293,6 +1293,8 @@ static int PlayerFlags_SevenToSix(int Flags)
 }
 
 // Server hooks
+
+// Called on all incoming NETMSG_INPUT, reformats player flags for sixup compatibility 
 void CGameContext::OnClientPrepareInput(int ClientId, void *pInput)
 {
 	auto *pPlayerInput = (CNetObj_PlayerInput *)pInput;
@@ -1300,10 +1302,11 @@ void CGameContext::OnClientPrepareInput(int ClientId, void *pInput)
 		pPlayerInput->m_PlayerFlags = PlayerFlags_SevenToSix(pPlayerInput->m_PlayerFlags);
 }
 
+// Called on all incoming NETMSG_INPUT, only sets player flags and tracks afk status. Does not perform a DirectInput
 void CGameContext::OnClientDirectInput(int ClientId, void *pInput)
 {
 	if(!m_World.m_Paused)
-		m_apPlayers[ClientId]->OnDirectInput((CNetObj_PlayerInput *)pInput);
+		m_apPlayers[ClientId]->OnPlayerFreshInput((CNetObj_PlayerInput *)pInput);
 
 	int Flags = ((CNetObj_PlayerInput *)pInput)->m_PlayerFlags;
 	if((Flags & 256) || (Flags & 512))
@@ -1312,9 +1315,10 @@ void CGameContext::OnClientDirectInput(int ClientId, void *pInput)
 	}
 }
 
+// Called once per input that happens on this tick after OnClientPredictedEarlyInput is called. pInput is nullptr if the client did not send any fresh input this tick
 void CGameContext::OnClientPredictedInput(int ClientId, void *pInput)
 {
-	// early return if no input at all has been sent by a player
+	// early return if no input has ever been sent by the player
 	if(pInput == nullptr && !m_aPlayerHasInput[ClientId])
 		return;
 
@@ -1326,12 +1330,13 @@ void CGameContext::OnClientPredictedInput(int ClientId, void *pInput)
 	}
 
 	if(!m_World.m_Paused)
-		m_apPlayers[ClientId]->OnPredictedInput(pApplyInput);
+		m_apPlayers[ClientId]->OnPlayerInput(pApplyInput);
 }
 
+// Called once per tick BEFORE OnClientPredictedInput. pInput is nullptr if the client did not send any fresh input this tick
 void CGameContext::OnClientPredictedEarlyInput(int ClientId, void *pInput)
 {
-	// early return if no input at all has been sent by a player
+	// early return if no input has ever been sent by the player
 	if(pInput == nullptr && !m_aPlayerHasInput[ClientId])
 		return;
 

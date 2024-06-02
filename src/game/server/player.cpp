@@ -499,7 +499,8 @@ void CPlayer::OnDisconnect()
 	m_Moderating = false;
 }
 
-void CPlayer::OnPredictedInput(CNetObj_PlayerInput *pNewInput)
+// Copy a input into the charecters active input to be used during the main phase of the game tick
+void CPlayer::OnPlayerInput(CNetObj_PlayerInput *pNewInput)
 {
 	// skip the input if chat is active
 	if((m_PlayerFlags & PLAYERFLAG_CHATTING) && (pNewInput->m_PlayerFlags & PLAYERFLAG_CHATTING))
@@ -519,7 +520,8 @@ void CPlayer::OnPredictedInput(CNetObj_PlayerInput *pNewInput)
 		GameServer()->SendBroadcast("This server uses an experimental translation from Teeworlds 0.7 to 0.6. Please report bugs on ddnet.org/discord", m_ClientId);
 }
 
-void CPlayer::OnDirectInput(CNetObj_PlayerInput *pNewInput)
+// Afk player tracking
+void CPlayer::OnPlayerFreshInput(CNetObj_PlayerInput *pNewInput)
 {
 	Server()->SetClientFlags(m_ClientId, pNewInput->m_PlayerFlags);
 
@@ -540,6 +542,7 @@ void CPlayer::OnDirectInput(CNetObj_PlayerInput *pNewInput)
 	}
 }
 
+// Executes a DirectInput for the players character
 void CPlayer::OnPredictedEarlyInput(CNetObj_PlayerInput *pNewInput)
 {
 	m_PlayerFlags = pNewInput->m_PlayerFlags;

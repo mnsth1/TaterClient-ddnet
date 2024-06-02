@@ -2901,7 +2901,7 @@ int CServer::Run()
 #ifdef CONF_DEBUG
 				UpdateDebugDummies(false);
 #endif
-
+				// Use DirectInput to apply any (and all) fires intended for the current tick to the gameworld
 				for(int c = 0; c < MAX_CLIENTS; c++)
 				{
 					if(m_aClients[c].m_State != CClient::STATE_INGAME)
