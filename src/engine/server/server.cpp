@@ -1686,7 +1686,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 
 			// call the mod with the fresh input data
 			if(m_aClients[ClientId].m_State == CClient::STATE_INGAME)
-				GameServer()->OnClientDirectInput(ClientId, LatestInput.m_aData);
+				GameServer()->OnClientFreshInput(ClientId, LatestInput.m_aData);
 		}
 		else if(Msg == NETMSG_RCON_CMD)
 		{

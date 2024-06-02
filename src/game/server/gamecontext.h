@@ -313,7 +313,7 @@ public:
 	void OnClientEnter(int ClientId) override;
 	void OnClientDrop(int ClientId, const char *pReason) override;
 	void OnClientPrepareInput(int ClientId, void *pInput) override;
-	void OnClientDirectInput(int ClientId, void *pInput) override;
+	void OnClientFreshInput(int ClientId, void *pInput) override;
 	void OnClientPredictedInput(int ClientId, void *pInput) override;
 	void OnClientPredictedEarlyInput(int ClientId, void *pInput) override;
 

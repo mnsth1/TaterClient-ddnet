@@ -1302,8 +1302,8 @@ void CGameContext::OnClientPrepareInput(int ClientId, void *pInput)
 		pPlayerInput->m_PlayerFlags = PlayerFlags_SevenToSix(pPlayerInput->m_PlayerFlags);
 }
 
-// Called on all incoming NETMSG_INPUT, only sets player flags and tracks afk status. Does not perform a DirectInput
-void CGameContext::OnClientDirectInput(int ClientId, void *pInput)
+// Called on all incoming NETMSG_INPUT, only sets player flags and tracks afk status. 
+void CGameContext::OnClientFreshInput(int ClientId, void *pInput)
 {
 	if(!m_World.m_Paused)
 		m_apPlayers[ClientId]->OnPlayerFreshInput((CNetObj_PlayerInput *)pInput);
