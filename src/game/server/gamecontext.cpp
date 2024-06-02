@@ -1315,7 +1315,7 @@ void CGameContext::OnClientFreshInput(int ClientId, void *pInput)
 	}
 }
 
-// Called once per input that happens on this tick after OnClientPredictedEarlyInput is called.
+// Called once per input that happens on this tick.
 // pInput is nullptr if the client did not send any fresh input this tick.
 void CGameContext::OnClientPredictedInput(int ClientId, void *pInput)
 {
@@ -1329,37 +1329,14 @@ void CGameContext::OnClientPredictedInput(int ClientId, void *pInput)
 	{
 		pApplyInput = &m_aLastPlayerInput[ClientId];
 	}
-
-	if(!m_World.m_Paused)
-		m_apPlayers[ClientId]->OnPlayerInput(pApplyInput);
-}
-
-// Called once per tick BEFORE OnClientPredictedInput. 
-// pInput is nullptr if the client did not send any fresh input this tick.
-void CGameContext::OnClientPredictedEarlyInput(int ClientId, void *pInput)
-{
-	// early return if no input has ever been sent by the player
-	if(pInput == nullptr && !m_aPlayerHasInput[ClientId])
-		return;
-
-	// set to last sent input when no new input has been sent
-	CNetObj_PlayerInput *pApplyInput = (CNetObj_PlayerInput *)pInput;
-	if(pApplyInput == nullptr)
-	{
-		pApplyInput = &m_aLastPlayerInput[ClientId];
-	}
 	else
 	{
-		// Store input in this function and not in `OnClientPredictedInput`,
-		// because this function is called on all inputs, while
-		// `OnClientPredictedInput` is only called on the first input of each
-		// tick.
 		mem_copy(&m_aLastPlayerInput[ClientId], pApplyInput, sizeof(m_aLastPlayerInput[ClientId]));
 		m_aPlayerHasInput[ClientId] = true;
 	}
 
 	if(!m_World.m_Paused)
-		m_apPlayers[ClientId]->OnPredictedEarlyInput(pApplyInput);
+		m_apPlayers[ClientId]->OnPlayerInput(pApplyInput);
 
 	if(m_TeeHistorianActive)
 	{

@@ -502,6 +502,11 @@ void CPlayer::OnDisconnect()
 // Copy a input into the charecters active input to be used during the main phase of the game tick
 void CPlayer::OnPlayerInput(CNetObj_PlayerInput *pNewInput)
 {
+	m_PlayerFlags = pNewInput->m_PlayerFlags;
+
+	if(!m_pCharacter && m_Team != TEAM_SPECTATORS && (pNewInput->m_Fire & 1))
+		m_Spawning = true;
+
 	// skip the input if chat is active
 	if((m_PlayerFlags & PLAYERFLAG_CHATTING) && (pNewInput->m_PlayerFlags & PLAYERFLAG_CHATTING))
 		return;
@@ -540,22 +545,6 @@ void CPlayer::OnPlayerFreshInput(CNetObj_PlayerInput *pNewInput)
 		m_LastActionTick = Server()->Tick();
 		m_LastTargetInit = true;
 	}
-}
-
-// Executes a DirectInput for the players character
-void CPlayer::OnPredictedEarlyInput(CNetObj_PlayerInput *pNewInput)
-{
-	m_PlayerFlags = pNewInput->m_PlayerFlags;
-
-	if(!m_pCharacter && m_Team != TEAM_SPECTATORS && (pNewInput->m_Fire & 1))
-		m_Spawning = true;
-
-	// skip the input if chat is active
-	if(m_PlayerFlags & PLAYERFLAG_CHATTING)
-		return;
-
-	//if(m_pCharacter && !m_Paused)
-		//m_pCharacter->OnDirectInput(pNewInput);
 }
 
 int CPlayer::GetClientVersion() const
