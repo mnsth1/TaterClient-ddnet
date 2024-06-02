@@ -208,7 +208,6 @@ void CServer::CClient::Reset()
 	for(auto &Input : m_aInputs)
 		Input.m_GameTick = -1;
 	m_CurrentInput = 0;
-	mem_zero(&m_LatestInput, sizeof(m_LatestInput));
 
 	m_Snapshots.PurgeAll();
 	m_LastAckedSnapshot = -1;
@@ -1631,7 +1630,10 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				return;
 			}
 
-			m_aClients[ClientId].m_LastAckedSnapshot = LastAckedSnapshot;
+			// The LastAckedSnapshot should only increase
+			if(LastAckedSnapshot > m_aClients[ClientId].m_LastAckedSnapshot)
+				m_aClients[ClientId].m_LastAckedSnapshot = LastAckedSnapshot;
+
 			if(m_aClients[ClientId].m_LastAckedSnapshot > 0)
 				m_aClients[ClientId].m_SnapRate = CClient::SNAPRATE_FULL;
 
@@ -1655,6 +1657,8 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 
 			CClient::CInput *pInput = &m_aClients[ClientId].m_aInputs[m_aClients[ClientId].m_CurrentInput];
 
+			// TODO: This should probably not be here, the most recent input can be found by looping over the ring buffer
+			// so we should not change the inputs original intended tick since we might need that information
 			if(IntendedTick <= Tick())
 				IntendedTick = Tick() + 1;
 
@@ -1670,14 +1674,17 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 			}
 
 			GameServer()->OnClientPrepareInput(ClientId, pInput->m_aData);
-			mem_copy(m_aClients[ClientId].m_LatestInput.m_aData, pInput->m_aData, MAX_INPUT_SIZE * sizeof(int));
+
+			CClient::CInput LatestInput;
+
+			mem_copy(LatestInput.m_aData, pInput->m_aData, MAX_INPUT_SIZE * sizeof(int));
 
 			m_aClients[ClientId].m_CurrentInput++;
 			m_aClients[ClientId].m_CurrentInput %= 200;
 
 			// call the mod with the fresh input data
 			if(m_aClients[ClientId].m_State == CClient::STATE_INGAME)
-				GameServer()->OnClientDirectInput(ClientId, m_aClients[ClientId].m_LatestInput.m_aData);
+				GameServer()->OnClientDirectInput(ClientId, LatestInput.m_aData);
 		}
 		else if(Msg == NETMSG_RCON_CMD)
 		{
