@@ -499,7 +499,6 @@ void CPlayer::OnDisconnect()
 	m_Moderating = false;
 }
 
-// Copy a input into the charecters active input to be used during the main phase of the game tick
 void CPlayer::OnPlayerInput(CNetObj_PlayerInput *pNewInput)
 {
 	m_PlayerFlags = pNewInput->m_PlayerFlags;

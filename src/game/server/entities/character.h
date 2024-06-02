@@ -61,7 +61,6 @@ public:
 	void HandleJetpack();
 
 	void OnPredictedInput(CNetObj_PlayerInput *pNewInput);
-	void OnDirectInput(CNetObj_PlayerInput *pNewInput);
 
 	void ReleaseHook();
 	void ResetHook();

@@ -694,28 +694,6 @@ void CCharacter::OnPredictedInput(CNetObj_PlayerInput *pNewInput)
 	mem_copy(&m_SavedInput, &m_Input, sizeof(m_SavedInput));
 }
 
-void CCharacter::OnDirectInput(CNetObj_PlayerInput *pNewInput)
-{
-	mem_copy(&m_LatestPrevInput, &m_LatestInput, sizeof(m_LatestInput));
-	mem_copy(&m_LatestInput, pNewInput, sizeof(m_LatestInput));
-	m_NumInputs++;
-
-	// it is not allowed to aim in the center
-	if(m_LatestInput.m_TargetX == 0 && m_LatestInput.m_TargetY == 0)
-		m_LatestInput.m_TargetY = -1;
-
-	Antibot()->OnDirectInput(m_pPlayer->GetCid());
-
-	if(m_NumInputs > 1 && m_pPlayer->GetTeam() != TEAM_SPECTATORS)
-	{
-		HandleWeaponSwitch();
-		FireWeapon(true);
-	}
-
-	mem_copy(&m_LatestPrevPrevInput, &m_LatestPrevInput, sizeof(m_LatestInput));
-	mem_copy(&m_LatestPrevInput, &m_LatestInput, sizeof(m_LatestInput));
-}
-
 void CCharacter::ReleaseHook()
 {
 	m_Core.SetHookedPlayer(-1);
@@ -742,7 +720,24 @@ void CCharacter::ResetInput()
 
 void CCharacter::WeaponTick()
 {
-	OnDirectInput(&m_Input);
+	mem_copy(&m_LatestPrevInput, &m_LatestInput, sizeof(m_LatestInput));
+	mem_copy(&m_LatestInput, &m_Input, sizeof(m_LatestInput));
+	m_NumInputs++;
+
+	// it is not allowed to aim in the center
+	if(m_LatestInput.m_TargetX == 0 && m_LatestInput.m_TargetY == 0)
+		m_LatestInput.m_TargetY = -1;
+
+	Antibot()->OnDirectInput(m_pPlayer->GetCid());
+
+	if(m_NumInputs > 1 && m_pPlayer->GetTeam() != TEAM_SPECTATORS)
+	{
+		HandleWeaponSwitch();
+		FireWeapon(true);
+	}
+
+	mem_copy(&m_LatestPrevPrevInput, &m_LatestPrevInput, sizeof(m_LatestInput));
+	mem_copy(&m_LatestPrevInput, &m_LatestInput, sizeof(m_LatestInput));
 }
 
 void CCharacter::PreTick()
