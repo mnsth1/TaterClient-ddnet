@@ -1637,7 +1637,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 			}
 
 			// The LastAckedSnapshot should only increase
-			if(LastAckedSnapshot > m_aClients[ClientId].m_LastAckedSnapshot)
+			if(LastAckedSnapshot > m_aClients[ClientId].m_LastAckedSnapshot || LastAckedSnapshot == -1)
 				m_aClients[ClientId].m_LastAckedSnapshot = LastAckedSnapshot;
 
 			if(m_aClients[ClientId].m_LastAckedSnapshot > 0)
