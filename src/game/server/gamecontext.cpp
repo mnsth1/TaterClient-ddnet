@@ -1315,7 +1315,8 @@ void CGameContext::OnClientFreshInput(int ClientId, void *pInput)
 	}
 }
 
-// Called once per input that happens on this tick after OnClientPredictedEarlyInput is called. pInput is nullptr if the client did not send any fresh input this tick
+// Called once per input that happens on this tick after OnClientPredictedEarlyInput is called.
+// pInput is nullptr if the client did not send any fresh input this tick.
 void CGameContext::OnClientPredictedInput(int ClientId, void *pInput)
 {
 	// early return if no input has ever been sent by the player
@@ -1333,7 +1334,8 @@ void CGameContext::OnClientPredictedInput(int ClientId, void *pInput)
 		m_apPlayers[ClientId]->OnPlayerInput(pApplyInput);
 }
 
-// Called once per tick BEFORE OnClientPredictedInput. pInput is nullptr if the client did not send any fresh input this tick
+// Called once per tick BEFORE OnClientPredictedInput. 
+// pInput is nullptr if the client did not send any fresh input this tick.
 void CGameContext::OnClientPredictedEarlyInput(int ClientId, void *pInput)
 {
 	// early return if no input has ever been sent by the player

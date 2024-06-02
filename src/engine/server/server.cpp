@@ -1661,13 +1661,12 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 
 			m_aClients[ClientId].m_LastInputTick = IntendedTick;
 
-			CClient::CInput *pInput = &m_aClients[ClientId].m_aInputs[BufferPosition];
-
 			// TODO: This should probably not be here, the most recent input can be found by looping over the ring buffer
 			// so we should not change the inputs original intended tick since we might need that information
 			if(IntendedTick <= Tick())
 				IntendedTick = Tick() + 1;
 
+			CClient::CInput *pInput = &m_aClients[ClientId].m_aInputs[BufferPosition];
 			pInput->m_GameTick = IntendedTick;
 
 			for(int i = 0; i < Size / 4; i++)
@@ -2949,7 +2948,6 @@ int CServer::Run()
 					if(!ClientHadInput)
 						GameServer()->OnClientPredictedInput(c, nullptr);
 				}
-
 				GameServer()->OnTick();
 				if(ErrorShutdown())
 				{

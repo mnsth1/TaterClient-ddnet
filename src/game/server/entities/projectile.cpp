@@ -23,7 +23,8 @@ CProjectile::CProjectile(
 	int SoundImpact,
 	vec2 InitDir,
 	int Layer,
-	int Number) :
+	int Number,
+	int StartTick) :
 	CEntity(pGameWorld, CGameWorld::ENTTYPE_PROJECTILE)
 {
 	m_Type = Type;
@@ -34,6 +35,10 @@ CProjectile::CProjectile(
 	//m_Damage = Damage;
 	m_SoundImpact = SoundImpact;
 	m_StartTick = Server()->Tick();
+
+	if(StartTick >= 0)
+		m_StartTick = StartTick;
+
 	m_Explosive = Explosive;
 
 	m_Layer = Layer;

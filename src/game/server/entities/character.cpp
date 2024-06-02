@@ -375,7 +375,7 @@ void CCharacter::HandleWeaponSwitch()
 	DoWeaponSwitch();
 }
 
-void CCharacter::FireWeapon()
+void CCharacter::FireWeapon(bool EarlyFire)
 {
 	if(m_ReloadTimer != 0)
 	{
@@ -514,6 +514,10 @@ void CCharacter::FireWeapon()
 			else
 				Lifetime = (int)(Server()->TickSpeed() * TuningList()[m_TuneZone].m_GunLifetime);
 
+			int StartTick = Server()->Tick();
+			if(EarlyFire)
+				StartTick--;
+
 			new CProjectile(
 				GameWorld(),
 				WEAPON_GUN, //Type
@@ -524,7 +528,10 @@ void CCharacter::FireWeapon()
 				false, //Freeze
 				false, //Explosive
 				-1, //SoundImpact
-				MouseTarget //InitDir
+				MouseTarget, //InitDir
+				0,
+				0,
+				StartTick // StartTick
 			);
 
 			GameServer()->CreateSound(m_Pos, SOUND_GUN_FIRE, TeamMask()); // NOLINT(clang-analyzer-unix.Malloc)
@@ -553,6 +560,10 @@ void CCharacter::FireWeapon()
 		else
 			Lifetime = (int)(Server()->TickSpeed() * TuningList()[m_TuneZone].m_GrenadeLifetime);
 
+		int StartTick = Server()->Tick();
+		if(EarlyFire)
+			StartTick--;
+
 		new CProjectile(
 			GameWorld(),
 			WEAPON_GRENADE, //Type
@@ -563,7 +574,10 @@ void CCharacter::FireWeapon()
 			false, //Freeze
 			true, //Explosive
 			SOUND_GRENADE_EXPLODE, //SoundImpact
-			MouseTarget // MouseTarget
+			MouseTarget, // MouseTarget
+			0,
+			0,
+			StartTick //StartTick
 		);
 
 		GameServer()->CreateSound(m_Pos, SOUND_GRENADE_FIRE, TeamMask());
@@ -598,6 +612,8 @@ void CCharacter::FireWeapon()
 	}
 
 	m_AttackTick = Server()->Tick();
+	if(EarlyFire)
+		m_AttackTick--;
 
 	if(!m_ReloadTimer)
 	{
@@ -693,7 +709,7 @@ void CCharacter::OnDirectInput(CNetObj_PlayerInput *pNewInput)
 	if(m_NumInputs > 1 && m_pPlayer->GetTeam() != TEAM_SPECTATORS)
 	{
 		HandleWeaponSwitch();
-		FireWeapon();
+		FireWeapon(true);
 	}
 
 	mem_copy(&m_LatestPrevPrevInput, &m_LatestPrevInput, sizeof(m_LatestInput));
@@ -722,6 +738,11 @@ void CCharacter::ResetInput()
 	m_Input.m_Fire &= INPUT_STATE_MASK;
 	m_Input.m_Jump = 0;
 	m_LatestPrevInput = m_LatestInput = m_Input;
+}
+
+void CCharacter::WeaponTick()
+{
+	OnDirectInput(&m_Input);
 }
 
 void CCharacter::PreTick()

@@ -20,7 +20,8 @@ public:
 		int SoundImpact,
 		vec2 InitDir,
 		int Layer = 0,
-		int Number = 0);
+		int Number = 0,
+		int StartTick = -1);
 
 	vec2 GetPos(float Time);
 	void FillInfo(CNetObj_Projectile *pProj);

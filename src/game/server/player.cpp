@@ -554,8 +554,8 @@ void CPlayer::OnPredictedEarlyInput(CNetObj_PlayerInput *pNewInput)
 	if(m_PlayerFlags & PLAYERFLAG_CHATTING)
 		return;
 
-	if(m_pCharacter && !m_Paused)
-		m_pCharacter->OnDirectInput(pNewInput);
+	//if(m_pCharacter && !m_Paused)
+		//m_pCharacter->OnDirectInput(pNewInput);
 }
 
 int CPlayer::GetClientVersion() const

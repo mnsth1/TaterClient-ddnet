@@ -214,6 +214,15 @@ void CGameWorld::Tick()
 		if(GameServer()->m_pController->IsForceBalanced())
 			GameServer()->SendChat(-1, TEAM_ALL, "Teams have been balanced");
 
+		// This is placed here so that certain weapon physics can happen before the regular Charecter Tick() to preserve physics accuracy
+		auto *pEnt = m_apFirstEntityTypes[ENTTYPE_CHARACTER];
+		for(; pEnt;)
+		{
+			m_pNextTraverseEntity = pEnt->m_pNextTypeEntity;
+			((CCharacter *)pEnt)->WeaponTick();
+			pEnt = m_pNextTraverseEntity;
+		}
+
 		// update all objects
 		for(int i = 0; i < NUM_ENTTYPES; i++)
 		{
