@@ -547,7 +547,7 @@ void CCharacter::FireWeapon(bool EarlyFire)
 		else
 			LaserReach = TuningList()[m_TuneZone].m_LaserReach;
 
-		new CLaser(&GameServer()->m_World, m_Pos, Direction, LaserReach, m_pPlayer->GetCid(), WEAPON_SHOTGUN);
+		new CLaser(&GameServer()->m_World, m_Pos, Direction, LaserReach, m_pPlayer->GetCid(), WEAPON_SHOTGUN, EarlyFire);
 		GameServer()->CreateSound(m_Pos, SOUND_SHOTGUN_FIRE, TeamMask()); // NOLINT(clang-analyzer-unix.Malloc)
 	}
 	break;
@@ -592,7 +592,7 @@ void CCharacter::FireWeapon(bool EarlyFire)
 		else
 			LaserReach = TuningList()[m_TuneZone].m_LaserReach;
 
-		new CLaser(GameWorld(), m_Pos, Direction, LaserReach, m_pPlayer->GetCid(), WEAPON_LASER);
+		new CLaser(GameWorld(), m_Pos, Direction, LaserReach, m_pPlayer->GetCid(), WEAPON_LASER, EarlyFire);
 		GameServer()->CreateSound(m_Pos, SOUND_LASER_FIRE, TeamMask()); // NOLINT(clang-analyzer-unix.Malloc)
 	}
 	break;
@@ -686,6 +686,7 @@ void CCharacter::OnPredictedInput(CNetObj_PlayerInput *pNewInput)
 
 	// copy new input
 	mem_copy(&m_Input, pNewInput, sizeof(m_Input));
+	m_NumInputs++;
 
 	// it is not allowed to aim in the center
 	if(m_Input.m_TargetX == 0 && m_Input.m_TargetY == 0)
@@ -722,7 +723,6 @@ void CCharacter::WeaponTick()
 {
 	mem_copy(&m_LatestPrevInput, &m_LatestInput, sizeof(m_LatestInput));
 	mem_copy(&m_LatestInput, &m_Input, sizeof(m_LatestInput));
-	m_NumInputs++;
 
 	// it is not allowed to aim in the center
 	if(m_LatestInput.m_TargetX == 0 && m_LatestInput.m_TargetY == 0)
