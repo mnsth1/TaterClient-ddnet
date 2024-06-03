@@ -1666,6 +1666,12 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 			if(IntendedTick <= Tick())
 				IntendedTick = Tick() + 1;
 
+			// Check once again that we are not overriding an input the client has already sent
+			// This is a workaround while the above code is still able to change IntendedTick
+			BufferPosition = IntendedTick % 200;
+			if(m_aClients[ClientId].m_aInputs[BufferPosition].m_GameTick == IntendedTick)
+				return;
+
 			CClient::CInput *pInput = &m_aClients[ClientId].m_aInputs[BufferPosition];
 			pInput->m_GameTick = IntendedTick;
 
