@@ -514,11 +514,7 @@ void CCharacter::FireWeapon(bool EarlyFire)
 			else
 				Lifetime = (int)(Server()->TickSpeed() * TuningList()[m_TuneZone].m_GunLifetime);
 
-			int StartTick = Server()->Tick();
-			if(EarlyFire)
-				StartTick--;
-
-			new CProjectile(
+			CProjectile *Projectile = new CProjectile(
 				GameWorld(),
 				WEAPON_GUN, //Type
 				m_pPlayer->GetCid(), //Owner
@@ -528,11 +524,10 @@ void CCharacter::FireWeapon(bool EarlyFire)
 				false, //Freeze
 				false, //Explosive
 				-1, //SoundImpact
-				MouseTarget, //InitDir
-				0,
-				0,
-				StartTick // StartTick
+				MouseTarget //InitDir
 			);
+			if(EarlyFire)
+				Projectile->SetStartTick(Server()->Tick() - 1);
 
 			GameServer()->CreateSound(m_Pos, SOUND_GUN_FIRE, TeamMask()); // NOLINT(clang-analyzer-unix.Malloc)
 		}
@@ -547,7 +542,10 @@ void CCharacter::FireWeapon(bool EarlyFire)
 		else
 			LaserReach = TuningList()[m_TuneZone].m_LaserReach;
 
-		new CLaser(&GameServer()->m_World, m_Pos, Direction, LaserReach, m_pPlayer->GetCid(), WEAPON_SHOTGUN, EarlyFire);
+		CLaser *Laser = new CLaser(&GameServer()->m_World, m_Pos, Direction, LaserReach, m_pPlayer->GetCid(), WEAPON_SHOTGUN);
+		if(EarlyFire)
+			Laser->SetEvalTick(Server()->Tick() - 1);
+
 		GameServer()->CreateSound(m_Pos, SOUND_SHOTGUN_FIRE, TeamMask()); // NOLINT(clang-analyzer-unix.Malloc)
 	}
 	break;
@@ -560,11 +558,7 @@ void CCharacter::FireWeapon(bool EarlyFire)
 		else
 			Lifetime = (int)(Server()->TickSpeed() * TuningList()[m_TuneZone].m_GrenadeLifetime);
 
-		int StartTick = Server()->Tick();
-		if(EarlyFire)
-			StartTick--;
-
-		new CProjectile(
+		CProjectile *Projectile = new CProjectile(
 			GameWorld(),
 			WEAPON_GRENADE, //Type
 			m_pPlayer->GetCid(), //Owner
@@ -574,11 +568,10 @@ void CCharacter::FireWeapon(bool EarlyFire)
 			false, //Freeze
 			true, //Explosive
 			SOUND_GRENADE_EXPLODE, //SoundImpact
-			MouseTarget, // MouseTarget
-			0,
-			0,
-			StartTick //StartTick
+			MouseTarget // MouseTarget
 		);
+		if(EarlyFire)
+			Projectile->SetStartTick(Server()->Tick() - 1);
 
 		GameServer()->CreateSound(m_Pos, SOUND_GRENADE_FIRE, TeamMask());
 	}
@@ -592,7 +585,10 @@ void CCharacter::FireWeapon(bool EarlyFire)
 		else
 			LaserReach = TuningList()[m_TuneZone].m_LaserReach;
 
-		new CLaser(GameWorld(), m_Pos, Direction, LaserReach, m_pPlayer->GetCid(), WEAPON_LASER, EarlyFire);
+		CLaser *Laser = new CLaser(GameWorld(), m_Pos, Direction, LaserReach, m_pPlayer->GetCid(), WEAPON_LASER);
+		if(EarlyFire)
+			Laser->SetEvalTick(Server()->Tick() - 1);
+
 		GameServer()->CreateSound(m_Pos, SOUND_LASER_FIRE, TeamMask()); // NOLINT(clang-analyzer-unix.Malloc)
 	}
 	break;

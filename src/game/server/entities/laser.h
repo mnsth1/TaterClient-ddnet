@@ -14,8 +14,7 @@ public:
 		vec2 Direction,
 		float StartEnergy,
 		int Owner,
-		int Type,
-		bool EarlyTick = false);
+		int Type);
 
 	virtual void Reset() override;
 	virtual void Tick() override;
@@ -49,6 +48,9 @@ private:
 	bool m_TeleportCancelled;
 	bool m_IsBlueTeleport;
 	bool m_BelongsToPracticeTeam;
+
+public:
+	void SetEvalTick(int Tick);
 };
 
 #endif

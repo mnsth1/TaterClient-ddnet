@@ -20,8 +20,7 @@ public:
 		int SoundImpact,
 		vec2 InitDir,
 		int Layer = 0,
-		int Number = 0,
-		int StartTick = -1);
+		int Number = 0);
 
 	vec2 GetPos(float Time);
 	void FillInfo(CNetObj_Projectile *pProj);
@@ -51,6 +50,7 @@ private:
 	vec2 m_InitDir;
 
 public:
+	void SetStartTick(int Tick);
 	void SetBouncing(int Value);
 	bool FillExtraInfoLegacy(CNetObj_DDRaceProjectile *pProj);
 	void FillExtraInfo(CNetObj_DDNetProjectile *pProj);

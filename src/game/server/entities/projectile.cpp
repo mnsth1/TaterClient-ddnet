@@ -23,8 +23,7 @@ CProjectile::CProjectile(
 	int SoundImpact,
 	vec2 InitDir,
 	int Layer,
-	int Number,
-	int StartTick) :
+	int Number) :
 	CEntity(pGameWorld, CGameWorld::ENTTYPE_PROJECTILE)
 {
 	m_Type = Type;
@@ -35,10 +34,6 @@ CProjectile::CProjectile(
 	//m_Damage = Damage;
 	m_SoundImpact = SoundImpact;
 	m_StartTick = Server()->Tick();
-
-	if(StartTick >= 0)
-		m_StartTick = StartTick;
-
 	m_Explosive = Explosive;
 
 	m_Layer = Layer;
@@ -52,6 +47,11 @@ CProjectile::CProjectile(
 	m_BelongsToPracticeTeam = pOwnerChar && pOwnerChar->Teams()->IsPractice(pOwnerChar->Team());
 
 	GameWorld()->InsertEntity(this);
+}
+
+void CProjectile::SetStartTick(int Tick)
+{
+	m_StartTick = Tick;
 }
 
 void CProjectile::Reset()

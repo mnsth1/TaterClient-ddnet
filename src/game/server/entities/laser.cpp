@@ -11,7 +11,7 @@
 #include <game/server/gamecontext.h>
 #include <game/server/gamemodes/DDRace.h>
 
-CLaser::CLaser(CGameWorld *pGameWorld, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Type, bool EarlyTick) :
+CLaser::CLaser(CGameWorld *pGameWorld, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Type) :
 	CEntity(pGameWorld, CGameWorld::ENTTYPE_LASER)
 {
 	m_Pos = Pos;
@@ -32,7 +32,12 @@ CLaser::CLaser(CGameWorld *pGameWorld, vec2 Pos, vec2 Direction, float StartEner
 	m_BelongsToPracticeTeam = pOwnerChar && pOwnerChar->Teams()->IsPractice(pOwnerChar->Team());
 
 	GameWorld()->InsertEntity(this);
-	DoBounce(EarlyTick);
+	DoBounce();
+}
+
+void CLaser::SetEvalTick(int Tick)
+{
+	m_EvalTick = Tick;
 }
 
 bool CLaser::HitCharacter(vec2 From, vec2 To)
